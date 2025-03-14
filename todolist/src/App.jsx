@@ -18,7 +18,7 @@ function App() {
       const response = await axios.get(`${url}/todolist`);
       setTodoList(response.data);
     } catch (err) {
-      console.error("Error fetching dataa: ", err);
+      console.error("Error fetching data: ", err);
     }
   };
 
@@ -37,7 +37,7 @@ function App() {
       console.log(response.data);
       fetchTodoList();
     } catch (err) {
-      console.error(`Error deleting dataa: ${err}`);
+      console.error(`Error deleting data: ${err}`);
     }
   };
 
