@@ -37,7 +37,7 @@ function App() {
       console.log(response.data);
       fetchTodoList();
     } catch (err) {
-      console.error(`Error deleting data: ${err}`);
+      console.error(`Error deleting dataa: ${err}`);
     }
   };
 
