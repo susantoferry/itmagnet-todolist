@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const TodoForm = ({ setOpenForm, fetchTodo, editTodo }) => {
   const [title, setTitle] = useState("");
@@ -10,6 +10,7 @@ const TodoForm = ({ setOpenForm, fetchTodo, editTodo }) => {
   const [errorStatus, setErrorStatus] = useState("");
 
   const url = "http://localhost:4000/api";
+
 
   const options = [
     { id: 0, name: "Todo" },
@@ -23,12 +24,22 @@ const TodoForm = ({ setOpenForm, fetchTodo, editTodo }) => {
     e.preventDefault();
 
     if (title !== "" && description !== "" && status !== "") {
-      const response = await axios.post(`${url}/todolist`, {
-        title,
-        description,
-        status,
-      });
-      console.log(response.data)
+      if (editTodo) {
+        const response = await axios.put(`${url}/todolist/${editTodo.id}`, {
+          title,
+          description,
+          status,
+        });
+        console.log(response.data)
+      } else {
+        const response = await axios.post(`${url}/todolist`, {
+          title,
+          description,
+          status,
+        });
+        console.log(response.data)
+      }
+      
       fetchTodo();
       setOpenForm(false);
     } else {
@@ -38,9 +49,23 @@ const TodoForm = ({ setOpenForm, fetchTodo, editTodo }) => {
     }
   };
 
+  useEffect(() => {
+    
+    if (editTodo) {
+      console.log(editTodo.title)
+      setTitle(editTodo.title);
+      setDescription(editTodo.description);
+      setStatus(editTodo.status)
+    } else {
+      setTitle("");
+      setDescription("");
+      setStatus("")
+    }
+  }, [editTodo])
+
   return (
-    <div className="absolute w-full flex justify-center">
-      <div className="w-1/2 bg-slate-200 rounded-xl p-5">
+    <div className="relative w-full flex justify-center items-center">
+      <div className="absolute w-1/2 bg-slate-200 rounded-xl p-5">
         <h1 className="text-xl font-semibold mb-4 text-center">Todo Form</h1>
         <form action="" onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -52,6 +77,7 @@ const TodoForm = ({ setOpenForm, fetchTodo, editTodo }) => {
               name="title"
               className="w-full h-10 rounded-lg px-2"
               placeholder="Title..."
+              value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
             <div>
@@ -71,6 +97,7 @@ const TodoForm = ({ setOpenForm, fetchTodo, editTodo }) => {
               cols={30}
               className="w-full rounded-lg p-2"
               placeholder="Description..."
+              value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
             <div>
@@ -88,6 +115,7 @@ const TodoForm = ({ setOpenForm, fetchTodo, editTodo }) => {
             <select
               name="status"
               className="w-full h-10 rounded-lg px-2"
+              value={status}
               onChange={(e) => setStatus(e.target.value)}
             >
               {options.map((opt, index) => (
